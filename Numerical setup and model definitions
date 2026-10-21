@@ -1,0 +1,39 @@
+from mpmath.math2 import sqrt2
+from scipy.integrate import solve_ivp
+from matplotlib import pyplot as plt
+import numpy as np
+
+class QuadraticPotential:
+    def __init__(self,m :float):
+        self.m : float = m
+    
+    def V(self, phi: float) -> float:
+        return self.m**2 * phi**2 / 2.0
+    
+    def Vprime(self,phi:float) -> float:
+        return self.m**2 *phi
+
+class QuarticPotential:
+    def __init__(self, g: float):
+        self.g: float = g
+
+    def V(self, phi: float) -> float:
+        return self.g * phi**4 / 24.0
+
+    def Vprime(self, phi: float) -> float:
+        return self.g * phi**3 / 6.0
+
+def ode_rhs(N: float, y, model):
+    phi: float = y[0]
+    pi: float = y[1]
+
+    V: float = model.V(phi)
+    Vprime: float = model.Vprime(phi)
+
+    epsilon: float = (pi**2)/2
+    Hsquare: float = V/(3.0-epsilon)
+
+    phi_rhs = pi
+    pi_rhs = -(3.0 - epsilon)*pi - (Vprime/Hsquare)
+    
+    return [phi_rhs, pi_rhs]
